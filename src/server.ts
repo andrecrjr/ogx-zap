@@ -155,6 +155,12 @@ function inputUrl(requestUrl: URL): string | undefined {
   return value || undefined;
 }
 
+function createShareUrl(requestUrl: URL, destinationUrl: string): string {
+  const shareUrl = new URL("/share", requestUrl.origin);
+  shareUrl.searchParams.set("url", destinationUrl);
+  return shareUrl.toString();
+}
+
 export function createApp(options: AppOptions = {}): (request: Request) => Promise<Response> {
   const cacheTtlSeconds =
     options.cacheTtlSeconds === undefined
@@ -239,7 +245,10 @@ export function createApp(options: AppOptions = {}): (request: Request) => Promi
     try {
       const resolved = await resolveCached(sourceUrl);
       if (wantsJson) {
-        return jsonResponse(resolved);
+        return jsonResponse({
+          ...resolved,
+          shareUrl: createShareUrl(requestUrl, resolved.destinationUrl),
+        });
       }
 
       return htmlResponse(renderWrapperHtml(resolved, !isCrawler(request)));

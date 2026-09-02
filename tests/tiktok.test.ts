@@ -165,10 +165,16 @@ describe("HTTP app", () => {
     expect(resolveResponse.status).toBe(200);
     expect(shareResponse.status).toBe(200);
     expect(calls).toBe(1);
-    expect(await resolveResponse.json()).toEqual(resolved);
+    expect(await resolveResponse.json()).toEqual({
+      ...resolved,
+      shareUrl: `http://localhost/share?url=${encodeURIComponent(resolved.destinationUrl)}`,
+    });
 
     const cachedResolveResponse = await app(new Request(`http://localhost/resolve${query}`));
-    expect(await cachedResolveResponse.json()).toEqual(resolved);
+    expect(await cachedResolveResponse.json()).toEqual({
+      ...resolved,
+      shareUrl: `http://localhost/share?url=${encodeURIComponent(resolved.destinationUrl)}`,
+    });
   });
 
   test("returns 503 when the concurrent resolution limit is reached", async () => {
@@ -242,9 +248,15 @@ describe("HTTP app", () => {
     expect(html).toContain("preview-image");
     expect(html).toContain("'TikTok: ' + (title.textContent || 'TikTok')");
     expect(html).toContain("id=\"whatsapp-status\"");
+    expect(html).toContain("id=\"copy-only-url\"");
     expect(html).toContain("navigator.share");
-    expect(html).toContain("shareUrl.searchParams.set('url', data.destinationUrl);");
-    expect(html).not.toContain("shareUrl.searchParams.set('url', data.originalUrl);");
+    expect(html).toContain("shareInput.value = data.shareUrl;");
+    expect(html).toContain("shareLink.href = data.shareUrl;");
+    expect(html).not.toContain("shareUrl.searchParams.set('url', data.destinationUrl);");
+    expect(html).toContain("copy.addEventListener('click', () => copyValue(clipboardText(), copy));");
+    expect(html).toContain("copyOnlyUrl.addEventListener('click', () => copyValue(shareInput.value, copyOnlyUrl));");
+    expect(html).toContain("await navigator.clipboard.writeText(value);");
+    expect(html).toContain("fallback.value = value;");
     expect(html.indexOf("<h3>Share URL</h3>")).toBeLessThan(html.indexOf('<h2 id="result-title">'));
   });
 });

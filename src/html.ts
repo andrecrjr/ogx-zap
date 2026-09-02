@@ -115,6 +115,7 @@ export function renderLandingPage(): string {
     <div class="share">
       <input id="share-url" readonly>
       <button id="copy-url" type="button">Copy</button>
+      <button id="copy-only-url" type="button">Copy URL</button>
       <button id="whatsapp-status" type="button">WhatsApp / Status</button>
       <a id="open-share" class="button" target="_blank" rel="noreferrer">Open</a>
     </div>
@@ -140,6 +141,7 @@ export function renderLandingPage(): string {
     const shareInput = document.querySelector('#share-url');
     const shareLink = document.querySelector('#open-share');
     const copy = document.querySelector('#copy-url');
+    const copyOnlyUrl = document.querySelector('#copy-only-url');
     const whatsappStatus = document.querySelector('#whatsapp-status');
 
     function clipboardText() {
@@ -174,10 +176,8 @@ export function renderLandingPage(): string {
           image.hidden = true;
         }
 
-        const shareUrl = new URL('/share', window.location.origin);
-        shareUrl.searchParams.set('url', data.destinationUrl);
-        shareInput.value = shareUrl.toString();
-        shareLink.href = shareUrl.toString();
+        shareInput.value = data.shareUrl;
+        shareLink.href = data.shareUrl;
         result.hidden = false;
       } catch (requestError) {
         error.textContent = requestError instanceof Error ? requestError.message : 'Could not resolve this TikTok URL.';
@@ -188,14 +188,12 @@ export function renderLandingPage(): string {
       }
     });
 
-    copy.addEventListener('click', async () => {
+    async function copyValue(value, button) {
       try {
-        await navigator.clipboard.writeText(clipboardText());
-        copy.textContent = 'Copied';
-        setTimeout(() => { copy.textContent = 'Copy'; }, 1200);
+        await navigator.clipboard.writeText(value);
       } catch {
         const fallback = document.createElement('textarea');
-        fallback.value = clipboardText();
+        fallback.value = value;
         fallback.style.position = 'fixed';
         fallback.style.opacity = '0';
         document.body.append(fallback);
@@ -203,7 +201,12 @@ export function renderLandingPage(): string {
         document.execCommand('copy');
         fallback.remove();
       }
-    });
+      button.textContent = 'Copied';
+      setTimeout(() => { button.textContent = button === copyOnlyUrl ? 'Copy URL' : 'Copy'; }, 1200);
+    }
+
+    copy.addEventListener('click', () => copyValue(clipboardText(), copy));
+    copyOnlyUrl.addEventListener('click', () => copyValue(shareInput.value, copyOnlyUrl));
 
     whatsappStatus.addEventListener('click', async () => {
       const text = clipboardText();
