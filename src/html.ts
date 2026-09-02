@@ -143,9 +143,22 @@ export function renderLandingPage(): string {
     const copy = document.querySelector('#copy-url');
     const copyOnlyUrl = document.querySelector('#copy-only-url');
     const whatsappStatus = document.querySelector('#whatsapp-status');
+    const shareHooks = [
+      'Olha o que eu achei! 👀',
+      'Veja essa promoção antes que acabe! 🔥',
+      'Encontrei uma oferta imperdível!',
+      'Você precisa ver isso 😱',
+      'Olha essa oportunidade!',
+      'Achei exatamente o que você estava procurando!',
+      'Esse preço está bom demais para ignorar!',
+      'Corre conferir essa promoção! 🏃',
+      'Descobri uma oferta que vale a pena!',
+      'Não deixa essa passar!',
+    ];
 
     function clipboardText() {
-      return 'TikTok: ' + (title.textContent || 'TikTok') + '\\n' + shareInput.value;
+      const hook = shareHooks[Math.floor(Math.random() * shareHooks.length)];
+      return 'TikTok: ' + hook + ' ' + (title.textContent || 'TikTok') + '\\n' + shareInput.value;
     }
 
     form.addEventListener('submit', async (event) => {

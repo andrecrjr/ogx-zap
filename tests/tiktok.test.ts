@@ -246,7 +246,9 @@ describe("HTTP app", () => {
     expect(html).toContain("TikTok OG Link Generator");
     expect(html).toContain("/resolve?url=");
     expect(html).toContain("preview-image");
-    expect(html).toContain("'TikTok: ' + (title.textContent || 'TikTok')");
+    expect(html).toContain("'Olha o que eu achei! 👀'");
+    expect(html).toContain("const hook = shareHooks[Math.floor(Math.random() * shareHooks.length)]");
+    expect(html).toContain("'TikTok: ' + hook + ' ' + (title.textContent || 'TikTok')");
     expect(html).toContain("id=\"whatsapp-status\"");
     expect(html).toContain("id=\"copy-only-url\"");
     expect(html).toContain("navigator.share");
