@@ -175,7 +175,7 @@ export function renderLandingPage(): string {
         }
 
         const shareUrl = new URL('/share', window.location.origin);
-        shareUrl.searchParams.set('url', data.originalUrl);
+        shareUrl.searchParams.set('url', data.destinationUrl);
         shareInput.value = shareUrl.toString();
         shareLink.href = shareUrl.toString();
         result.hidden = false;

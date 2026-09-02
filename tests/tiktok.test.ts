@@ -243,6 +243,8 @@ describe("HTTP app", () => {
     expect(html).toContain("'TikTok: ' + (title.textContent || 'TikTok')");
     expect(html).toContain("id=\"whatsapp-status\"");
     expect(html).toContain("navigator.share");
+    expect(html).toContain("shareUrl.searchParams.set('url', data.destinationUrl);");
+    expect(html).not.toContain("shareUrl.searchParams.set('url', data.originalUrl);");
     expect(html.indexOf("<h3>Share URL</h3>")).toBeLessThan(html.indexOf('<h2 id="result-title">'));
   });
 });
