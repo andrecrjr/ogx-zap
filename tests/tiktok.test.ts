@@ -167,13 +167,13 @@ describe("HTTP app", () => {
     expect(calls).toBe(1);
     expect(await resolveResponse.json()).toEqual({
       ...resolved,
-      shareUrl: `http://localhost/share?url=${encodeURIComponent(resolved.destinationUrl)}`,
+      shareUrl: `http://localhost/share?url=${encodeURIComponent(sampleUrl)}`,
     });
 
     const cachedResolveResponse = await app(new Request(`http://localhost/resolve${query}`));
     expect(await cachedResolveResponse.json()).toEqual({
       ...resolved,
-      shareUrl: `http://localhost/share?url=${encodeURIComponent(resolved.destinationUrl)}`,
+      shareUrl: `http://localhost/share?url=${encodeURIComponent(sampleUrl)}`,
     });
   });
 

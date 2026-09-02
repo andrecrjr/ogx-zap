@@ -155,9 +155,9 @@ function inputUrl(requestUrl: URL): string | undefined {
   return value || undefined;
 }
 
-function createShareUrl(requestUrl: URL, destinationUrl: string): string {
+function createShareUrl(requestUrl: URL, sourceUrl: string): string {
   const shareUrl = new URL("/share", requestUrl.origin);
-  shareUrl.searchParams.set("url", destinationUrl);
+  shareUrl.searchParams.set("url", sourceUrl);
   return shareUrl.toString();
 }
 
@@ -247,7 +247,7 @@ export function createApp(options: AppOptions = {}): (request: Request) => Promi
       if (wantsJson) {
         return jsonResponse({
           ...resolved,
-          shareUrl: createShareUrl(requestUrl, resolved.destinationUrl),
+          shareUrl: createShareUrl(requestUrl, sourceUrl),
         });
       }
 
